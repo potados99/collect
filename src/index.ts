@@ -1,10 +1,10 @@
+import HttpError from "./common/HttpError";
 import handleGet from "./web/routes/handleGet";
 import handlePost from "./web/routes/handlePost";
 import handleDelete from "./web/routes/handleDelete";
 import { getMethod } from "./web/event";
-import { APIGatewayProxyEvent, APIGatewayProxyResult } from "aws-lambda";
-import HttpError from "./common/HttpError";
 import { errorResponse } from "./web/response";
+import { APIGatewayProxyEvent, APIGatewayProxyResult } from "aws-lambda";
 
 export async function getRoute(event: APIGatewayProxyEvent) {
   const routes = {

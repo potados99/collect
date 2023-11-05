@@ -1,14 +1,14 @@
-import getService from '../../domain/service';
-import { getChannelNameAndMessageId } from '../event';
-import { APIGatewayProxyEvent } from 'aws-lambda';
+import getService from "../../domain/service";
+import { jsonResponse } from "../response";
+import { APIGatewayProxyEvent } from "aws-lambda";
+import { getChannelNameAndMessageId } from "../event";
 
 export default async function handleDelete(event: APIGatewayProxyEvent) {
-    const { channelName } = await getChannelNameAndMessageId(event);
+  const { channelName } = await getChannelNameAndMessageId(event);
 
-    await getService().deleteMessages(channelName);
+  await getService().deleteMessages(channelName);
 
-    return {
-        statusCode: 200,
-        body: '굿\n',
-    };
+  return jsonResponse({
+    message: "굿",
+  });
 }

@@ -1,11 +1,11 @@
-import getService from "../../domain/service";
-import { getBody, getChannelNameAndMessageId, getMetadata } from "../event";
-import { APIGatewayProxyEvent } from "aws-lambda";
 import HttpError from "../../common/HttpError";
+import getService from "../../domain/service";
+import { jsonResponse } from "../response";
+import { APIGatewayProxyEvent } from "aws-lambda";
+import { getBody, getChannelNameAndMessageId, getMetadata } from "../event";
 
 export default async function handlePost(event: APIGatewayProxyEvent) {
   const content = getBody(event);
-
   if (content == null) {
     throw new HttpError(400, "Empty body");
   }
@@ -19,8 +19,7 @@ export default async function handlePost(event: APIGatewayProxyEvent) {
     ...metadata,
   });
 
-  return {
-    statusCode: 200,
-    body: "굿\n",
-  };
+  return jsonResponse({
+    message: "굿",
+  });
 }

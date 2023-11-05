@@ -1,8 +1,8 @@
+import HttpError from "../../common/HttpError";
 import getService from "../../domain/service";
-import { getChannelNameAndMessageId, isApiCall } from "../event";
 import { APIGatewayProxyEvent } from "aws-lambda";
 import { htmlResponse, jsonResponse } from "../response";
-import HttpError from "../../common/HttpError";
+import { getChannelNameAndMessageId, isApiCall } from "../event";
 
 export default async function handleGet(event: APIGatewayProxyEvent) {
   const { channelName, messageId } = await getChannelNameAndMessageId(event);

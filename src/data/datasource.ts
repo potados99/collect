@@ -1,7 +1,7 @@
 import path from "path";
-import { promises as fs } from "fs";
 import config from "../config";
 import HttpError from "../common/HttpError";
+import { promises as fs } from "fs";
 
 export async function getChannelDataSource(channelName: string) {
   const channelNameSanitized = channelName.replace(/\//g, "").replace(/\./g, "").trim();

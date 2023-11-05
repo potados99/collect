@@ -1,13 +1,14 @@
 import path from "path";
 import { promises as fs } from "fs";
 import config from "../config";
+import HttpError from "../common/HttpError";
 
 const basePath = config.storageDir;
 
 export async function getChannelDataSource(channelName: string) {
   const channelNameSanitized = channelName.replace(/\//g, "").replace(/\./g, "").trim();
   if (!channelNameSanitized) {
-    throw new Error(`Invalid channel name: [${channelName}]`);
+    throw new HttpError(400, `Invalid channel name: [${channelName}]`);
   }
 
   const filePath = path.join(basePath, "channels", `${channelNameSanitized}.json`);

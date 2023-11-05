@@ -3,6 +3,8 @@ import handlePost from "./web/routes/handlePost";
 import handleDelete from "./web/routes/handleDelete";
 import { getMethod } from "./web/event";
 import { APIGatewayProxyEvent, APIGatewayProxyResult } from "aws-lambda";
+import HttpError from "./common/HttpError";
+import { errorResponse } from "./web/response";
 
 export async function getRoute(event: APIGatewayProxyEvent) {
   const routes = {
@@ -15,7 +17,7 @@ export async function getRoute(event: APIGatewayProxyEvent) {
 
   const route = routes[method];
   if (route == null) {
-    throw new Error(`Unknown method: [${method}]`);
+    throw new HttpError(400, `Unknown method: [${method}]`);
   }
 
   return route;
@@ -28,11 +30,13 @@ export const lambdaHandler = async (event: APIGatewayProxyEvent): Promise<APIGat
     return route(event);
   } catch (err) {
     console.log(err);
-    return {
-      statusCode: 500,
-      body: JSON.stringify({
-        message: "some error happened",
-      }),
-    };
+
+    if (err instanceof HttpError) {
+      return errorResponse(err.statusCode, err.message);
+    } else if (err instanceof Error) {
+      return errorResponse(500, err.message);
+    } else {
+      return errorResponse(500, "Something very weird happened.");
+    }
   }
 };

@@ -1,7 +1,7 @@
 import getService from "../../domain/service";
 import {getChannelNameAndMessageId} from "../event";
 
-export default async function deleteMessages(event) {
+export default async function handleDelete(event) {
   const {channelName} = await getChannelNameAndMessageId(event);
 
   await getService().deleteMessages(channelName);

@@ -1,7 +1,7 @@
 import getService from "../../domain/service";
 import {getBody, getChannelNameAndMessageId, getMetadata} from "../event";
 
-export default async function postMessage(event) {
+export default async function handlePost(event) {
   const {channelName} = await getChannelNameAndMessageId(event);
   const content = await getBody(event);
   const metadata = getMetadata(event);

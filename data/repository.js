@@ -2,22 +2,19 @@ import {randomUUID} from "crypto";
 import {promises as fs} from "fs";
 import {getBackupDataSource, getChannelDataSource} from "./datasource";
 
-export async function getChannelRepository(channelName) {
-  return await getRepository(await getChannelDataSource(channelName));
+export default async function getRepository(channelName) {
+  return createRepositoryWithDataSources(
+    await getChannelDataSource(channelName), // 채널마다 하나씩 있는 데이터 소스(파일)
+    await getBackupDataSource() // 모든 채널의 메시지가 다 저장되는 백업용 데이터 소스(파일)
+  );
 }
 
-export async function getBackupRepository() {
-  return await getRepository(await getBackupDataSource());
-}
-
-async function getRepository(dataSource) {
-  const file = dataSource;
-
+function createRepositoryWithDataSources(primaryDataSource, backupDataSource) {
   return {
     getAllMessages: async function() {
-      const fileContents = await fs.readFile(file);
+      const fileContent = await fs.readFile(primaryDataSource).then(buffer => buffer.toString());
 
-      return JSON.parse(fileContents);
+      return JSON.parse(fileContent);
     },
 
     getMessage: async function(messageId) {
@@ -45,11 +42,14 @@ async function getRepository(dataSource) {
 
       allMessages.push(newMessage);
 
-      await fs.writeFile(file, JSON.stringify(allMessages, null, 4));
+      const fileContent = JSON.stringify(allMessages, null, 4);
+
+      await fs.writeFile(primaryDataSource, fileContent);
+      await fs.writeFile(backupDataSource, fileContent);
     },
 
     deleteAllMessages: async function() {
-      await fs.writeFile(file, '[]');
+      await fs.writeFile(primaryDataSource, '[]');
     }
   };
 }

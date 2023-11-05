@@ -1,13 +1,13 @@
-import getMessages from "./web/routes/getMessages";
-import postMessage from "./web/routes/postMessage";
-import deleteMessages from "./web/routes/deleteMessages";
+import handleGet from "./web/routes/handleGet.js";
+import handlePost from "./web/routes/handlePost.js";
+import handleDelete from "./web/routes/handleDelete.js";
 import {getMethod} from "./web/event";
 
 export async function getRoute(event) {
   const routes = {
-    get: getMessages,
-    post: postMessage,
-    delete: deleteMessages
+    get: handleGet,
+    post: handlePost,
+    delete: handleDelete
   };
 
   const method = getMethod(event);

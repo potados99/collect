@@ -1,19 +1,27 @@
-import {getBackupRepository, getChannelRepository} from "../data/repository";
-import {getBody, getMetadata} from "../web/event";
+import getRepository from "../data/repository";
 
 export default function getService() {
-  return {
-    getMessages: async function (channelName, messageId) {
-      const storage = await getChannelRepository(channelName);
+  return createService();
+}
 
-      return messageId == null ? await storage.getAllMessages() : await storage.getMessage(messageId);
+function createService() {
+  return {
+    getMessage: async function (channelName, messageId) {
+      const repo = await getRepository(channelName);
+
+      return await repo.getMessage(messageId);
+    },
+
+    getAllMessages: async function (channelName, messageId) {
+      const repo = await getRepository(channelName);
+
+      return await repo.getAllMessages();
     },
 
     addMessage: async function (channelName, content, metadata) {
       const {timeEpoch, userAgent, sourceIp} = metadata;
 
-      const storage = await getChannelRepository(channelName);
-      const backupStorage = await getBackupRepository();
+      const repo = await getRepository(channelName);
 
       const message = {
         channelName,
@@ -23,14 +31,13 @@ export default function getService() {
         content
       };
 
-      await storage.addMessage(message);
-      await backupStorage.addMessage(message);
+      await repo.addMessage(message);
     },
 
     deleteMessages: async function (channelName) {
-      const storage = await getChannelRepository(channelName);
+      const repo = await getRepository(channelName);
 
-      await storage.deleteAllMessages();
+      await repo.deleteAllMessages();
     }
   };
 }

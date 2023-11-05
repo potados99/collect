@@ -1,4 +1,5 @@
 import path from "path";
+import {promises as fs} from "fs";
 
 export async function getChannelDataSource(channelName) {
   const channelNameSanitized = channelName.replace(/\//g, '').replace(/\./g, '').trim();
@@ -8,12 +9,7 @@ export async function getChannelDataSource(channelName) {
 
   const filePath = path.join('/mnt/storage/channels/', `${channelNameSanitized}.json`);
 
-  // 파일이 없으면 생성합니다.
-  try {
-    await fs.access(filePath);
-  } catch (e) {
-    await fs.writeFile(filePath, '[]');
-  }
+  await touch(filePath, '[]');
 
   return filePath;
 }
@@ -21,12 +17,15 @@ export async function getChannelDataSource(channelName) {
 export async function getBackupDataSource() {
   const filePath = path.join('/mnt/storage/', `combined.json`);
 
-  // 파일이 없으면 생성합니다.
+  await touch(filePath, '[]');
+
+  return filePath;
+}
+
+async function touch(filePath, content = '[]') {
   try {
     await fs.access(filePath);
   } catch (e) {
-    await fs.writeFile(filePath, '[]');
+    await fs.writeFile(filePath, content);
   }
-
-  return filePath;
 }

@@ -1,0 +1,28 @@
+extends base
+
+block content
+    h2= channelName
+    pre= JSON.stringify(messages, null, 4)
+
+    form(name='post_form')
+        input(type='text', id='form_content')
+        input(type='submit', value='등록')
+
+    form(name='delete_form')
+        input(type='submit', value='초기화', style='background: red;')
+
+    script.
+        document.post_form.onsubmit = function() {
+            fetch('/' + channelName, {method: 'POST', body: document.getElementById('form_content').value}).then(() => window.location.reload());
+            return false;
+        };
+
+        document.delete_form.onsubmit = function() {
+            fetch('/' + channelName, {method: 'DELETE'}).then(() => window.location.reload());
+            return false;
+        };
+
+    style.
+        pre {
+            white-space: pre-wrap;
+        }

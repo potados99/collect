@@ -1,9 +1,8 @@
 {
-  "name": "hello_world",
+  "name": "collect",
   "version": "1.0.0",
-  "description": "hello world sample for NodeJS",
-  "main": "app.js",
-  "license": "MIT",
+  "description": "감자도스 텍스트 수집기",
+  "license": "GPL-3.0",
   "repository": {
     "type": "git",
     "url": "git+https://github.com/potados99/collect.git"

@@ -27,9 +27,9 @@ export const lambdaHandler = async (event: APIGatewayProxyEvent): Promise<APIGat
   try {
     const route = await getRoute(event);
 
-    return route(event);
+    return await route(event);
   } catch (err) {
-    console.log(err);
+    console.error(err);
 
     if (err instanceof HttpError) {
       return errorResponse(err.statusCode, err.message);

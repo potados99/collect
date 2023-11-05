@@ -12,17 +12,17 @@ block content
         input(type='submit', value='초기화', style='background: red;')
 
     script.
-        document.post_form.onsubmit = function() {
-            fetch('/' + channelName, {method: 'POST', body: document.getElementById('form_content').value}).then(() => window.location.reload());
-            return false;
-        };
+      document.post_form.onsubmit = function() {
+        fetch('/!{channelName}', {
+          method: 'POST',
+          body: document.getElementById('form_content').value
+        }).then(() => window.location.reload());
+        return false;
+      };
 
-        document.delete_form.onsubmit = function() {
-            fetch('/' + channelName, {method: 'DELETE'}).then(() => window.location.reload());
-            return false;
-        };
-
-    style.
-        pre {
-            white-space: pre-wrap;
-        }
+      document.delete_form.onsubmit = function() {
+        fetch('/!{channelName}', {
+          method: 'DELETE'
+        }).then(() => window.location.reload());
+        return false;
+      };

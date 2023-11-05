@@ -1,21 +1,50 @@
 {
-  "name": "collect",
+  "name": "hello_world",
   "version": "1.0.0",
-  "description": "Text collector",
-  "main": "index.js",
-  "type": "module",
-  "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1",
-    "start": "node index.js"
-  },
+  "description": "hello world sample for NodeJS",
+  "main": "app.js",
+  "license": "MIT",
   "repository": {
     "type": "git",
     "url": "git+https://github.com/potados99/collect.git"
   },
   "author": "potados99",
-  "license": "ISC",
-  "bugs": {
-    "url": "https://github.com/potados99/collect/issues"
+  "scripts": {
+    "test": "jest",
+    "build": "tsc",
+    "postbuild": "npm run copy-files",
+    "copy-files": "copyfiles -u 1 src/**/*.pug dist",
+    "zip": "cd dist && bestzip ../dist.zip * && cd ..",
+    "aws-deploy": "aws lambda update-function-code --function-name collect --zip-file fileb://dist.zip",
+    "deploy": "npm run build && npm run zip && npm run aws-deploy"
   },
-  "homepage": "https://github.com/potados99/collect#readme"
+  "dependencies": {
+    "pug": "^3.0.2"
+  },
+  "devDependencies": {
+    "@types/aws-lambda": "^8.10.92",
+    "@types/jest": "^29.2.0",
+    "@types/node": "^18.11.4",
+    "@types/pug": "^2.0.8",
+    "@typescript-eslint/eslint-plugin": "^5.10.2",
+    "@typescript-eslint/parser": "^5.10.2",
+    "bestzip": "^2.2.1",
+    "copyfiles": "^2.4.1",
+    "jest": "^29.2.1",
+    "prettier": "^2.5.1",
+    "ts-jest": "^29.0.5",
+    "ts-node": "^10.9.1",
+    "typescript": "^4.8.4"
+  },
+  "prettier": {
+    "printWidth": 120
+  },
+  "jest": {
+    "transform": {
+      "^.+\\.ts?$": "ts-jest"
+    },
+    "testMatch": [
+      "**/tests/unit/*.test.ts"
+    ]
+  }
 }

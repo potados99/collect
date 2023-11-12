@@ -1,12 +1,5 @@
 import getRepository from "../data/repository";
-
-export type AddMessageParams = {
-  channelName: string;
-  timeEpoch: number;
-  userAgent: string | null;
-  sourceIp: string;
-  content: string;
-};
+import { UserInfo } from "./Message";
 
 export default function getService() {
   return createService();
@@ -14,6 +7,12 @@ export default function getService() {
 
 function createService() {
   return {
+    addMessage: async function (channelName: string, content: string, author: UserInfo) {
+      const repo = await getRepository(channelName);
+
+      await repo.addMessage(content, author);
+    },
+
     getMessage: async function (channelName: string, messageId: string) {
       const repo = await getRepository(channelName);
 
@@ -26,21 +25,22 @@ function createService() {
       return await repo.getAllMessages();
     },
 
-    addMessage: async function ({ channelName, ...params }: AddMessageParams) {
+    updateMessage: async function (channelName: string, messageId: string, body: string, author: UserInfo) {
       const repo = await getRepository(channelName);
 
-      const message = {
-        channelName,
-        ...params,
-      };
-
-      await repo.addMessage(message);
+      await repo.updateMessage(messageId, body, author);
     },
 
-    deleteMessages: async function (channelName: string) {
+    deleteMessage: async function (channelName: string, messageId: string, author: UserInfo) {
       const repo = await getRepository(channelName);
 
-      await repo.deleteAllMessages();
+      await repo.deleteMessage(messageId, author);
+    },
+
+    deleteAllMessages: async function (channelName: string, author: UserInfo) {
+      const repo = await getRepository(channelName);
+
+      await repo.deleteAllMessages(author);
     },
   };
 }

@@ -1,4 +1,5 @@
 import { APIGatewayProxyEvent } from "aws-lambda";
+import { UserInfo } from "../domain/Message";
 
 export async function getChannelNameAndMessageId(event: APIGatewayProxyEvent) {
   const { pathParameters } = event;
@@ -54,7 +55,17 @@ export function getMetadata(event: APIGatewayProxyEvent) {
   };
 }
 
-const supportedMethods = ["get", "post", "delete"] as const;
+export function getAuthor(event: APIGatewayProxyEvent): UserInfo {
+  const { userAgent, sourceIp } = getMetadata(event);
+
+  return {
+    name: null, // TODO: 이름을 어떻게 받을지 고민해보세요.
+    userAgent,
+    sourceIp,
+  };
+}
+
+const supportedMethods = ["get", "post", "patch", "delete"] as const;
 
 export function getMethod(event: APIGatewayProxyEvent): (typeof supportedMethods)[number] {
   const { httpMethod } = event;

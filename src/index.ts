@@ -5,11 +5,13 @@ import handleDelete from "./web/routes/handleDelete";
 import { getMethod } from "./web/event";
 import { errorResponse } from "./web/response";
 import { APIGatewayProxyEvent, APIGatewayProxyResult } from "aws-lambda";
+import handlePatch from "./web/routes/handlePatch";
 
 export async function getRoute(event: APIGatewayProxyEvent) {
   const routes = {
     get: handleGet,
     post: handlePost,
+    patch: handlePatch,
     delete: handleDelete,
   };
 

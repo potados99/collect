@@ -17,11 +17,12 @@ export default async function handleGet(event: APIGatewayProxyEvent) {
 
 async function getAllMessages(channelName: string, apiCall: boolean) {
   const messages = await getService().getAllMessages(channelName);
+  const messagesResponses = messages.map((message) => message.toResponse());
 
   if (apiCall) {
-    return jsonResponse(messages);
+    return jsonResponse(messagesResponses);
   } else {
-    return htmlResponse("messages", { channelName, messages });
+    return htmlResponse("messages", { channelName, messages: messagesResponses });
   }
 }
 
@@ -31,9 +32,11 @@ async function getMessage(channelName: string, messageId: string, apiCall: boole
     throw new HttpError(404, "Message not found.");
   }
 
+  const messageResponse = message.toResponse();
+
   if (apiCall) {
-    return jsonResponse(message);
+    return jsonResponse(messageResponse);
   } else {
-    return htmlResponse("message", { channelName, message });
+    return htmlResponse("message", { channelName, messages: messageResponse });
   }
 }

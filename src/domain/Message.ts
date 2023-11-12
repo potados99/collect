@@ -46,6 +46,14 @@ export default class Message {
     ]);
   }
 
+  get firstCommit() {
+    if (this.commits.length === 0) {
+      throw new Error("커밋이 없습니다.");
+    }
+
+    return this.commits[0];
+  }
+
   get lastCommit() {
     if (this.commits.length === 0) {
       throw new Error("커밋이 없습니다.");
@@ -81,5 +89,17 @@ export default class Message {
       author,
       committedAt: Date.now(),
     });
+  }
+
+  toResponse() {
+    return {
+      id: this.id,
+      channel: this.channel,
+      commits: this.commits,
+
+      body: this.lastCommit.type === "delete" ? null : this.lastCommit.body, // 호환을 위한 필드입니다.
+      timestamp: this.firstCommit.committedAt, // 호환을 위한 필드입니다.
+      date: new Date(this.lastCommit.committedAt).toLocaleString("ko-KR", { timeZone: "Asia/Seoul" }), // 호환을 위한 필드입니다.
+    };
   }
 }

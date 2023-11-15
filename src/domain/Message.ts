@@ -99,7 +99,7 @@ export default class Message {
 
       body: this.lastCommit.type === "delete" ? null : this.lastCommit.body, // 호환을 위한 필드입니다.
       timestamp: this.firstCommit.committedAt, // 호환을 위한 필드입니다.
-      date: new Date(this.lastCommit.committedAt).toLocaleString("ko-KR", { timeZone: "Asia/Seoul" }), // 호환을 위한 필드입니다.
+      date: new Date(this.firstCommit.committedAt).toLocaleString("ko-KR", { timeZone: "Asia/Seoul" }), // 호환을 위한 필드입니다.
     };
   }
 }

@@ -13,9 +13,10 @@ export default async function handlePost(event: APIGatewayProxyEvent) {
   const { channelName } = await getChannelNameAndMessageId(event);
   const author = getAuthor(event);
 
-  await getService().addMessage(channelName, content, author);
+  const { channel, id } = await getService().addMessage(channelName, content, author);
 
   return jsonResponse({
     message: "굿",
+    url: `https://collect.potados.com/${channel}/${id}`,
   });
 }

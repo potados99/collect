@@ -10,7 +10,7 @@ function createService() {
     addMessage: async function (channelName: string, content: string, author: UserInfo) {
       const repo = await getRepository(channelName);
 
-      await repo.addMessage(content, author);
+      return await repo.addMessage(content, author);
     },
 
     getMessage: async function (channelName: string, messageId: string) {

@@ -35,6 +35,8 @@ function createRepository(channelName: string, dataSource: string) {
       messages.push(newMessage);
 
       await save();
+
+      return newMessage;
     },
 
     getMessage: async function (messageId: string) {

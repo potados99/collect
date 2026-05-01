@@ -5,7 +5,7 @@ import Message, { UserInfo } from "../domain/Message";
 export default async function getRepository(channelName: string) {
   return createRepository(
     channelName,
-    await getChannelDataSource(channelName) // 채널마다 하나씩 있는 데이터 소스(파일)
+    await getChannelDataSource(channelName), // 채널마다 하나씩 있는 데이터 소스(파일)
   );
 }
 

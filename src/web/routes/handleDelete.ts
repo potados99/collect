@@ -1,33 +1,26 @@
+import type { Request, Response } from "express";
 import getService from "../../domain/service";
 import { jsonResponse } from "../response";
-import { APIGatewayProxyEvent } from "aws-lambda";
-import { getAuthor, getChannelNameAndMessageId } from "../event";
-import { UserInfo } from "../../domain/Message";
+import { getAuthor, getChannelNameAndMessageId } from "../request";
+import type { UserInfo } from "../../domain/Message";
 
-export default async function handleDelete(event: APIGatewayProxyEvent) {
-  const { channelName, messageId } = await getChannelNameAndMessageId(event);
-
-  const author = getAuthor(event);
+export default async function handleDelete(req: Request, res: Response): Promise<void> {
+  const { channelName, messageId } = getChannelNameAndMessageId(req);
+  const author = getAuthor(req);
 
   if (messageId == null) {
-    return await deleteAllMessages(channelName, author);
+    await deleteAllMessages(res, channelName, author);
   } else {
-    return await deleteMessage(channelName, messageId, author);
+    await deleteMessage(res, channelName, messageId, author);
   }
 }
 
-async function deleteAllMessages(channelName: string, author: UserInfo) {
+async function deleteAllMessages(res: Response, channelName: string, author: UserInfo) {
   await getService().deleteAllMessages(channelName, author);
-
-  return jsonResponse({
-    message: "굿",
-  });
+  jsonResponse(res, { message: "굿" });
 }
 
-async function deleteMessage(channelName: string, messageId: string, author: UserInfo) {
+async function deleteMessage(res: Response, channelName: string, messageId: string, author: UserInfo) {
   await getService().deleteMessage(channelName, messageId, author);
-
-  return jsonResponse({
-    message: "굿",
-  });
+  jsonResponse(res, { message: "굿" });
 }

@@ -1,32 +1,32 @@
+import type { Request, Response } from "express";
 import HttpError from "../../common/HttpError";
 import getService from "../../domain/service";
-import { APIGatewayProxyEvent } from "aws-lambda";
 import { htmlResponse, jsonResponse } from "../response";
-import { getChannelNameAndMessageId, isApiCall } from "../event";
+import { getChannelNameAndMessageId, isApiCall } from "../request";
 
-export default async function handleGet(event: APIGatewayProxyEvent) {
-  const { channelName, messageId } = await getChannelNameAndMessageId(event);
-  const apiCall = isApiCall(event);
+export default async function handleGet(req: Request, res: Response): Promise<void> {
+  const { channelName, messageId } = getChannelNameAndMessageId(req);
+  const apiCall = isApiCall(req);
 
   if (messageId == null) {
-    return await getAllMessages(channelName, apiCall);
+    await getAllMessages(res, channelName, apiCall);
   } else {
-    return await getMessage(channelName, messageId, apiCall);
+    await getMessage(res, channelName, messageId, apiCall);
   }
 }
 
-async function getAllMessages(channelName: string, apiCall: boolean) {
+async function getAllMessages(res: Response, channelName: string, apiCall: boolean) {
   const messages = await getService().getAllMessages(channelName);
   const messagesResponses = messages.map((message) => message.toResponse());
 
   if (apiCall) {
-    return jsonResponse(messagesResponses);
+    jsonResponse(res, messagesResponses);
   } else {
-    return htmlResponse("messages", { channelName, messages: messagesResponses });
+    htmlResponse(res, "messages", { channelName, messages: messagesResponses });
   }
 }
 
-async function getMessage(channelName: string, messageId: string, apiCall: boolean) {
+async function getMessage(res: Response, channelName: string, messageId: string, apiCall: boolean) {
   const message = await getService().getMessage(channelName, messageId);
   if (message == null) {
     throw new HttpError(404, "Message not found.");
@@ -35,8 +35,8 @@ async function getMessage(channelName: string, messageId: string, apiCall: boole
   const messageResponse = message.toResponse();
 
   if (apiCall) {
-    return jsonResponse(messageResponse);
+    jsonResponse(res, messageResponse);
   } else {
-    return htmlResponse("message", { channelName, messages: messageResponse });
+    htmlResponse(res, "message", { channelName, messages: messageResponse });
   }
 }

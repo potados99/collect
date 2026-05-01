@@ -27,7 +27,9 @@ export async function getBackupDataSource() {
 async function touch(filePath: string, content: string = "[]") {
   try {
     await fs.access(filePath);
-  } catch (e) {
+  } catch {
+    // 부모 디렉토리가 없으면 만든다 (storageDir이 처음 비어있는 환경 대응).
+    await fs.mkdir(path.dirname(filePath), { recursive: true });
     await fs.writeFile(filePath, content);
   }
 }

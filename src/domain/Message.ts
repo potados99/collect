@@ -29,7 +29,11 @@ type DeletingCommit = {
 export type Commit = PostingCommit | PatchingCommit | DeletingCommit;
 
 export default class Message {
-  constructor(public readonly id: string, public readonly channel: string, public readonly commits: Commit[]) {}
+  constructor(
+    public readonly id: string,
+    public readonly channel: string,
+    public readonly commits: Commit[],
+  ) {}
 
   static fromJson(obj: any): Message {
     return new Message(obj.id, obj.channel, obj.commits);

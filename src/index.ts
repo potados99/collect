@@ -1,6 +1,7 @@
 // Express 진입점.
 // 라우팅: GET/POST/PATCH/DELETE 모두 channel과 message가 옵셔널이라 단일 어댑터로 받는다.
 import express, { type NextFunction, type Request, type Response } from "express";
+import cors from "cors";
 import config from "./config";
 import HttpError from "./common/HttpError";
 import handleGet from "./web/routes/handleGet";
@@ -14,6 +15,10 @@ export function createApp() {
 
   // X-Forwarded-* 신뢰: Caddy 등 reverse proxy 뒤에서 req.ip가 실제 클라이언트 IP가 되도록.
   app.set("trust proxy", config.trustProxy);
+
+  // CORS: 인증/세션이 없는 공개 API라 모든 origin 허용.
+  // (도메인을 좁히고 싶으면 config.corsOrigin 같은 식으로 노출하면 됨.)
+  app.use(cors());
 
   // 모든 본문을 평문 텍스트로 받는다 (도메인이 임의의 텍스트를 다루기 때문).
   // limit 1MB는 텍스트 수집기 사용 패턴을 고려한 보수적 한도.

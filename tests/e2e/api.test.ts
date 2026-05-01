@@ -97,4 +97,21 @@ describe("collect e2e", () => {
     expect(res.headers["content-type"]).toMatch(/html/);
     expect(res.text).toContain("html");
   });
+
+  it("일반 요청에 CORS 허용 헤더가 붙는다", async () => {
+    const res = await request(loadApp()).get("/_health").set("Origin", "https://feed.potados.com");
+    expect(res.status).toBe(200);
+    expect(res.headers["access-control-allow-origin"]).toBe("*");
+  });
+
+  it("preflight(OPTIONS)가 메서드/헤더를 허용한다", async () => {
+    const res = await request(loadApp())
+      .options("/somechannel")
+      .set("Origin", "https://feed.potados.com")
+      .set("Access-Control-Request-Method", "POST")
+      .set("Access-Control-Request-Headers", "content-type");
+    expect([200, 204]).toContain(res.status);
+    expect(res.headers["access-control-allow-origin"]).toBe("*");
+    expect(res.headers["access-control-allow-methods"]).toMatch(/POST/);
+  });
 });
